@@ -1,0 +1,53 @@
+<mat-stepper [linear]="isLinear" #stepper>
+  <!-- Select currency form -->
+
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Choose the currency</ng-template>
+      <mat-form-field appearance="fill">
+        <mat-label>Currency</mat-label>
+        <mat-select required formControlName="selected_currency">
+          <div *ngFor="let currency of currencies">
+            <mat-option value="{{currency}}">{{currency}}</mat-option>
+          </div>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Select amount of money to withdraw form -->
+
+  <mat-step [stepControl]="secondFormGroup" label="Enter the sum you want to withdraw">
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field appearance="fill">
+        <mat-label>Sum</mat-label>
+        <input type="number" matInput formControlName="sum" placeholder="Ex. 100" required>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext (click)="withdrawMoney()">Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- After withdraw -->
+
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <div *ngIf="moneySuccessfullyWithdrawn else withdrawFailed">
+      <div *ngFor="let banknote of banknotesList">
+        <p>{{banknote.quantity}} banknotes of {{banknote.type}} {{banknote.currency}} were extracted!</p>
+      </div>
+    </div>
+    <ng-template #withdrawFailed>
+      <p>Not enough money in the ATM at the moment.</p>
+    </ng-template>
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
